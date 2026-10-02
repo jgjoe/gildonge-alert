@@ -2,16 +2,16 @@
 
 **차량 어시스턴트 백엔드에 SSE 기반 실시간 알림을 얹은 확장본**
 
-[![Base](https://img.shields.io/badge/base-gildongE-6DB33F?logo=springboot&logoColor=white)](https://github.com/jgjoe/gildongE)
+[![Base](https://img.shields.io/badge/base-gildongE-6DB33F?logo=springboot&logoColor=white)](https://github.com/jgjoe/gildonge-backend)
 [![Push](https://img.shields.io/badge/push-Server--Sent%20Events-blue)](#설계-판단)
 [![Stack](https://img.shields.io/badge/Spring%20Boot-Java%2017-6DB33F?logo=springboot&logoColor=white)](#기술-스택)
 
-[**gildongE**](https://github.com/jgjoe/gildongE)(6인 팀 AI 차량 어시스턴트의 백엔드) 위에
+[**gildongE**](https://github.com/jgjoe/gildonge-backend)(6인 팀 AI 차량 어시스턴트의 백엔드) 위에
 **서버가 먼저 사용자에게 알림을 밀어 주는 기능**을 붙인 저장소입니다.
 소모품 교체 시기처럼 서버만 아는 사건을 앱이 계속 물어보지 않아도 받게 하는 것이 목적이었습니다.
 
 > 두 저장소는 같은 코드베이스에서 갈라져 나왔습니다. **도메인 API의 설계 의도와 팀 내 역할 경계는
-> [gildongE 저장소](https://github.com/jgjoe/gildongE)에 정리돼 있고, 이 저장소는 알림 기능만 추가로 담습니다.**
+> [gildongE 저장소](https://github.com/jgjoe/gildonge-backend)에 정리돼 있고, 이 저장소는 알림 기능만 추가로 담습니다.**
 
 ---
 
