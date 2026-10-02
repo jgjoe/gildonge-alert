@@ -2,33 +2,20 @@
 
 **차량 어시스턴트 백엔드에 SSE 기반 실시간 알림을 얹은 확장본**
 
-[![Base](https://img.shields.io/badge/base-gildongE-6DB33F?logo=springboot&logoColor=white)](https://github.com/jgjoe/gildongE)
+[![Base](https://img.shields.io/badge/base-gildongE-6DB33F?logo=springboot&logoColor=white)](https://github.com/jgjoe/gildonge-backend)
 [![Push](https://img.shields.io/badge/push-Server--Sent%20Events-blue)](#설계-판단)
 [![Stack](https://img.shields.io/badge/Spring%20Boot-Java%2017-6DB33F?logo=springboot&logoColor=white)](#기술-스택)
 
-[**gildongE**](https://github.com/jgjoe/gildongE)(7인 팀 AI 차량 어시스턴트의 백엔드) 위에
+[**gildongE**](https://github.com/jgjoe/gildonge-backend)(6인 팀 AI 차량 어시스턴트의 백엔드) 위에
 **서버가 먼저 사용자에게 알림을 밀어 주는 기능**을 붙인 저장소입니다.
 소모품 교체 시기처럼 서버만 아는 사건을 앱이 계속 물어보지 않아도 받게 하는 것이 목적이었습니다.
 
 > 두 저장소는 같은 코드베이스에서 갈라져 나왔습니다. **도메인 API의 설계 의도와 팀 내 역할 경계는
-> [gildongE 저장소](https://github.com/jgjoe/gildongE)에 정리돼 있고, 이 저장소는 알림 기능만 추가로 담습니다.**
+> [gildongE 저장소](https://github.com/jgjoe/gildonge-backend)에 정리돼 있고, 이 저장소는 알림 기능만 추가로 담습니다.**
 
 ---
 
-## 왜 폴링이 아니라 푸시인가
-
-교체 시기 알림은 **언제 발생할지 서버만 압니다.** 앱이 주기적으로 물어보게 하면
-서버는 대부분 "없다"고 답하는 요청을 계속 받고, 그렇다고 주기를 늘리면 알림이 늦습니다.
-
-연결을 열어 두고 **서버가 사건이 생겼을 때 보내는 방식**을 골랐습니다.
-알림은 서버 → 클라이언트 한 방향이면 충분해서 WebSocket 대신 **SSE(Server-Sent Events)**를 썼습니다.
-HTTP 위에서 동작하고 브라우저의 `EventSource`로 바로 받을 수 있어 구현·운용 비용이 낮습니다.
-
-```js
-new EventSource("http://<서버주소>:8080/alerts/subscribe/USER123");
-```
-
-## 구현 범위
+## 주요 기능
 
 | 영역 | 구현 내용 | 확인 위치 |
 |---|---|---|
@@ -40,6 +27,19 @@ new EventSource("http://<서버주소>:8080/alerts/subscribe/USER123");
 | **정기 점검** | 매일 자정(Asia/Seoul)에 교체 시기가 다가온 소모품을 찾아 `CONSUMABLE_DUE_SOON` 알림 발송 | `ConsumableInspectionScheduler` |
 
 ## 설계 판단
+
+### 폴링 대신 푸시를 골랐다
+
+교체 시기 알림은 **언제 발생할지 서버만 압니다.** 앱이 주기적으로 물어보게 하면
+서버는 대부분 "없다"고 답하는 요청을 계속 받고, 그렇다고 주기를 늘리면 알림이 늦습니다.
+
+연결을 열어 두고 **서버가 사건이 생겼을 때 보내는 방식**을 골랐습니다.
+알림은 서버 → 클라이언트 한 방향이면 충분해서 WebSocket 대신 **SSE(Server-Sent Events)**를 썼습니다.
+HTTP 위에서 동작하고 브라우저의 `EventSource`로 바로 받을 수 있어 구현·운용 비용이 낮습니다.
+
+```js
+new EventSource("http://<서버주소>:8080/alerts/subscribe/USER123");
+```
 
 ### 한 사용자가 여러 기기로 접속한다
 
@@ -85,16 +85,6 @@ MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>/<db>
 ```
 
 구독: `GET /alerts/subscribe/{userId}` · 테스트 발송: `POST /alerts/test/{userId}`
-
-## 범위와 조건
-
-- **gildongE에서 갈라져 나온 확장 저장소입니다.** 차량·소모품·주행패턴 등 도메인 API는 원 저장소와 동일하며, 이 저장소가 더하는 것은 알림 기능입니다.
-- 학기 프로젝트 프로토타입이라 인증이 붙어 있지 않습니다. 구독 경로가 `userId`를 그대로 받으므로, 운영이라면 토큰에서 사용자를 확인하는 절차가 선행되어야 합니다.
-- emitter를 서버 메모리에 보관합니다. 인스턴스가 여러 대면 구독한 인스턴스에서만 알림이 나가므로, 확장하려면 메시지 브로커가 필요합니다.
-- 알림 발송량·지연 등 운영 지표는 측정하지 않았습니다.
-
-즉시 반응(Change Stream)과 정기 점검(스케줄러)을 나눈 구조는 그대로 두고, 위 항목들은 운영으로 옮길 때
-먼저 손봐야 할 순서로 적어 둔 것입니다.
 
 ## 만든 사람
 
