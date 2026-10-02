@@ -6,7 +6,7 @@
 [![Push](https://img.shields.io/badge/push-Server--Sent%20Events-blue)](#설계-판단)
 [![Stack](https://img.shields.io/badge/Spring%20Boot-Java%2017-6DB33F?logo=springboot&logoColor=white)](#기술-스택)
 
-[**gildongE**](https://github.com/jgjoe/gildongE)(7인 팀 AI 차량 어시스턴트의 백엔드) 위에
+[**gildongE**](https://github.com/jgjoe/gildongE)(6인 팀 AI 차량 어시스턴트의 백엔드) 위에
 **서버가 먼저 사용자에게 알림을 밀어 주는 기능**을 붙인 저장소입니다.
 소모품 교체 시기처럼 서버만 아는 사건을 앱이 계속 물어보지 않아도 받게 하는 것이 목적이었습니다.
 
@@ -85,16 +85,6 @@ MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>/<db>
 ```
 
 구독: `GET /alerts/subscribe/{userId}` · 테스트 발송: `POST /alerts/test/{userId}`
-
-## 범위와 조건
-
-- **gildongE에서 갈라져 나온 확장 저장소입니다.** 차량·소모품·주행패턴 등 도메인 API는 원 저장소와 동일하며, 이 저장소가 더하는 것은 알림 기능입니다.
-- 학기 프로젝트 프로토타입이라 인증이 붙어 있지 않습니다. 구독 경로가 `userId`를 그대로 받으므로, 운영이라면 토큰에서 사용자를 확인하는 절차가 선행되어야 합니다.
-- emitter를 서버 메모리에 보관합니다. 인스턴스가 여러 대면 구독한 인스턴스에서만 알림이 나가므로, 확장하려면 메시지 브로커가 필요합니다.
-- 알림 발송량·지연 등 운영 지표는 측정하지 않았습니다.
-
-즉시 반응(Change Stream)과 정기 점검(스케줄러)을 나눈 구조는 그대로 두고, 위 항목들은 운영으로 옮길 때
-먼저 손봐야 할 순서로 적어 둔 것입니다.
 
 ## 만든 사람
 
